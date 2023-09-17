@@ -1,7 +1,7 @@
 export type SiteConfig = typeof siteConfig
 
 export const siteConfig = {
-  name: "Type Generator",
+  name: "IDL Type Generator",
   description:
     "Convert an IDL's types to Typescript",
   mainNav: [],

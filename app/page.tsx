@@ -38,7 +38,7 @@ export default function IndexPage() {
           Generate TypeScript types from Anchor IDL 🧠
         </p>
         <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
-          Type Generator
+          IDL Type Generator
         </h1>
       </div>
       <Separator />
