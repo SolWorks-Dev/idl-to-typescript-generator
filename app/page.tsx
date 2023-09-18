@@ -34,6 +34,7 @@ export default function IndexPage() {
   const [includeAccounts, setIncludeAccounts] = useState<CheckedState>(false);
   const [includeTypes, setIncludeTypes] = useState<CheckedState>(true);
   const [includeEnums, setIncludeEnums] = useState<CheckedState>(true);
+  const [includeEvents, setIncludeEvents] = useState<CheckedState>(true);
 
   return (
     <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
@@ -122,6 +123,15 @@ export default function IndexPage() {
                 Include Enums
               </label>
             </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox id="terms2" checked={includeEvents} onCheckedChange={setIncludeEvents} />
+              <label
+                htmlFor="terms2"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Include Events
+              </label>
+            </div>
           </div>
         </div>
         <div className="flex items-center justify-start space-x-4 pt-2">
@@ -153,6 +163,7 @@ export default function IndexPage() {
                   includeAccounts: includeAccounts === true,
                   includeTypes: includeTypes === true,
                   includeEnums: includeEnums === true,
+                  includeEvents: includeEvents === true,
                   useBigNumberForBN: useBigNumberForBN === true,
                 })
                 setTypes(types)

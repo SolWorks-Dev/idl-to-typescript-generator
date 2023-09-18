@@ -124,6 +124,7 @@ export function generateTypeScriptTypes({
   includeAccounts,
   includeTypes,
   includeEnums,
+  includeEvents,
   useBigNumberForBN,
 }: {
   jsonData: JSONData
@@ -131,6 +132,7 @@ export function generateTypeScriptTypes({
   includeAccounts: boolean
   includeTypes: boolean
   includeEnums: boolean,
+  includeEvents: boolean,
   useBigNumberForBN: boolean
 }): string {
   const typeScriptTypes: string[] = []
@@ -178,8 +180,7 @@ export function generateTypeScriptTypes({
     }
   }
 
-  // TODO: includeEvents
-  if (jsonData.events) {
+  if (includeEvents && jsonData.events) {
     for (const event of jsonData.events) {
       const typeName = event.name
       const typeDefinition: TypeDefinition = {
