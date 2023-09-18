@@ -167,7 +167,7 @@ export function generateTypeScriptTypes({
     }
   }
 
-  if (includeAccounts) {
+  if (includeAccounts && jsonData.accounts) {
     for (const type of jsonData.accounts) {
       const typeName = type.name
       const typeDefinition = type.type
