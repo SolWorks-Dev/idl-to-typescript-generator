@@ -281,7 +281,7 @@ export default function IndexPage() {
           <Textarea
             placeholder={"Types will appear here."}
             value={types}
-            className="h-[800px]"
+            className="h-[500px]"
           />
            <div className="flex flex-col gap-2 w-[400px] sticky top-0">
             <div className="mb-4">
