@@ -1,26 +1,26 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import {
-  Logger,
-} from "@solworks/soltoolkit-sdk"
-import { ArrowLeftRight, Clipboard, ClipboardCopy, RefreshCw } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Separator } from "@/components/ui/separator"
-import {
-  Table,
-  TableCaption,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { Textarea } from "@/components/ui/textarea"
-import { useToast } from "@/components/ui/use-toast"
-import { X } from "lucide-react"
-import { Checkbox } from "@/components/ui/checkbox"
-import { CheckedState } from "@radix-ui/react-checkbox"
+import { useState } from "react";
+import { CheckedState } from "@radix-ui/react-checkbox";
+import { Logger } from "@solworks/soltoolkit-sdk";
+import { ArrowLeftRight, Clipboard, ClipboardCopy, RefreshCw, X } from "lucide-react";
+
+
+
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { Table, TableCaption, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Textarea } from "@/components/ui/textarea";
+import { Toaster } from "@/components/ui/toaster";
+import { useToast } from "@/components/ui/use-toast";
+
+
+
+import { generateTypeScriptTypes } from "./type-generator";
+
 
 const logger = new Logger("core")
 
@@ -30,6 +30,9 @@ export default function IndexPage() {
   const [idl, setIdl] = useState("");
   const [types, setTypes] = useState("");
   const [useNumberForBN, setUseNumberForBN] = useState<CheckedState>(false);
+  const [includeAccounts, setIncludeAccounts] = useState<CheckedState>(false);
+  const [includeTypes, setIncludeTypes] = useState<CheckedState>(true);
+  const [includeEnums, setIncludeEnums] = useState<CheckedState>(true);
 
   return (
     <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
@@ -53,7 +56,7 @@ export default function IndexPage() {
             </div>
           </div>
         </div>
-        <div>
+        <div className="flex items-center justify-start space-x-4 pt-2">
           <Textarea
             placeholder="Paste your IDL here."
             onChange={(e) => {
@@ -62,6 +65,54 @@ export default function IndexPage() {
             value={idl}
             className="h-[300px]"
           />
+          <div className="flex flex-col gap-2 w-[400px] sticky top-0">
+            <div className="mb-4">
+              <h3 className="text-xl font-bold leading-tight tracking-tighter md:text-xl">
+              Settings
+              </h3>
+              <div className="text-md">
+                <div className="inline-block pr-4 text-base text-muted-foreground">
+                  Configure generation settings.
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox id="terms2" checked={useNumberForBN} onCheckedChange={setUseNumberForBN} />
+              <label
+                htmlFor="terms2"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Use number type for BN
+              </label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox id="terms2" checked={includeTypes} onCheckedChange={setIncludeTypes} />
+              <label
+                htmlFor="terms2"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Include Types
+              </label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox id="terms2" checked={includeAccounts} onCheckedChange={setIncludeAccounts} />
+              <label
+                htmlFor="terms2"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Include Accounts
+              </label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox id="terms2" checked={includeEnums} onCheckedChange={setIncludeEnums} />
+              <label
+                htmlFor="terms2"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Include Enums
+              </label>
+            </div>
+          </div>
         </div>
         <div className="flex items-center justify-start space-x-4 pt-2">
           <Button
@@ -86,8 +137,19 @@ export default function IndexPage() {
             onClick={async () => {
               try {
                 const json = JSON.parse(idl);
-                const types = generateTypeScriptTypes(json, useNumberForBN);
-                setTypes(types);
+                const types = generateTypeScriptTypes({
+                  jsonData: json,
+                  useNumberForBN,
+                  includeAccounts: includeAccounts === true,
+                  includeTypes: includeTypes === true,
+                  includeEnums: includeEnums === true,
+                })
+                setTypes(types)
+                toast({
+                  title: "Success",
+                  description: `Types have been generated.`,
+                  duration: 5000,
+                })
               } catch (e: any) {
                 console.log(e);
                 toast({
@@ -100,15 +162,7 @@ export default function IndexPage() {
           >
             <ArrowLeftRight className="mr-2 h-4 w-4" /> Generate
           </Button>
-          <div className="flex items-center space-x-2">
-            <Checkbox id="terms2" checked={useNumberForBN} onCheckedChange={setUseNumberForBN} />
-            <label
-              htmlFor="terms2"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Use number type for BN
-            </label>
-          </div>
+          
         </div>
       </div>
       <div className="grid w-full gap-2">
@@ -160,192 +214,7 @@ export default function IndexPage() {
           </Button>
           </div>
       </div>
+      <Toaster />
     </section>
   )
-}
-
-
-interface TypeDefinition {
-  kind: string
-  fields?: TypeField[]
-  variants?: TypeVariant[]
-  array?: [TypeDefinition, number]
-  defined?: string
-  type?: string
-  option?: TypeDefinition | string
-  vec?: TypeDefinition | string
-}
-
-interface TypeField {
-  name: string;
-  type: TypeDefinition | string;
-}
-
-interface TypeVariant {
-  name: string;
-}
-
-interface Type {
-  name: string;
-  type: TypeDefinition;
-}
-
-interface JSONData {
-  types: Type[];
-}
-
-const typeMap = [
-  {
-    name: 'bool',
-    space: 1,
-    type: 'boolean',
-  }, 
-  {
-    name: 'u8',
-    space: 1,
-    type: 'number',
-  },
-  {
-    name: 'i8',
-    space: 1,
-    type: 'number',
-  },
-  {
-    name: 'u16',
-    space: 2,
-    type: 'number',
-  },
-  {
-    name: 'i16',
-    space: 2,
-    type: 'number',
-  },
-  {
-    name: 'u32',
-    space: 4,
-    type: 'number',
-  }, 
-  {
-    name: 'i32',
-    space: 4,
-    type: 'number',
-  }, 
-  {
-    name: 'u64',
-    space: 8,
-    type: 'BN',
-  }, 
-  {
-    name: 'i64',
-    space: 8,
-    type: 'BN',
-  },
-  {
-    name: 'u128',
-    space: 16,
-    type: 'BN',
-  }, 
-  {
-    name: 'i128',
-    space: 16,
-    type: 'BN',
-  },
-  {
-    name: 'publicKey',
-    space: 32,
-    type: 'PublicKey',
-  },
-  {
-    name: 'Enum',
-    space: 1,
-    type: 'number',
-  },
-  {
-    name: 'f32',
-    space: 4,
-    type: 'number',
-  },
-  {
-    name: 'f64',
-    space: 8,
-    type: 'number',
-  }
-]
-
-function generateTypeScriptTypes(jsonData: JSONData, useNumberForBN: CheckedState): string {
-  const typeScriptTypes: string[] = [];
-
-  for (const type of jsonData.types) {
-    const typeName = type.name;
-    const typeDefinition = type.type;
-    const typeScriptType = generateTypeScriptType(typeDefinition, useNumberForBN);
-    if (type.type.kind === 'enum') {
-      typeScriptTypes.push(`enum ${typeName} ${typeScriptType}`);
-    } else {
-      typeScriptTypes.push(`interface ${typeName} ${typeScriptType}`);
-    }
-  }
-
-  return typeScriptTypes.join('\n\n');
-}
-
-function generateTypeScriptType(typeDefinition: TypeDefinition, useNumberForBN: CheckedState): string {
-  if (typeDefinition.kind === 'struct') {
-    const fields = typeDefinition.fields || [];
-    const fieldTypes = fields
-      // @ts-ignore
-      .map((field) => `   ${field.name}: ${generateTypeScriptType(field.type, useNumberForBN)};`)
-      .join('\n');
-    return `{\n${fieldTypes}\n}`;
-  } else if (typeDefinition.kind === 'enum') {
-    const variants = typeDefinition.variants || [];
-    const variantNames = variants
-      // @ts-ignore
-      .map((variant) => `   ${variant.name} = '${variant.name}',`)
-      .join('\n');
-    return `{\n${variantNames}\n}`;
-  } else if (typeDefinition.array) {
-    const [definedType, length] = typeDefinition.array;
-    return `[${generateTypeScriptType(definedType, useNumberForBN)}: ${length}]`;
-  } else if (typeDefinition.defined) {
-    return `${typeDefinition.defined}`;
-  } else if (typeDefinition.option) {
-    if (typeof typeDefinition.option === 'string') {
-      return `${typeDefinition.option} | null`;
-    } else {
-      return `${generateTypeScriptType(
-        typeDefinition.option,
-        useNumberForBN
-      )} | null`
-    }
-  } else if (typeDefinition.vec) {
-    if (typeof typeDefinition.vec === "string") {
-      return `${typeDefinition.vec}[]`
-    } else {
-      return `${generateTypeScriptType(typeDefinition.vec, useNumberForBN)}[]`
-    }
-  } else {
-    if (typeDefinition.type) {
-      const typeMapEntry = typeMap.find((entry) => entry.name === typeDefinition.type);
-      if (typeMapEntry) {
-        return typeMapEntry.type;
-      }
-    } else {
-      // @ts-ignore
-      const typeMapEntry = typeMap.find((entry) => entry.name === typeDefinition.toString());
-      if (typeMapEntry) {
-        if (typeMapEntry.type === 'BN') {
-          if (useNumberForBN === 'indeterminate') {
-            return 'BN | number';
-          } else if (useNumberForBN) {
-            return 'number';
-          } else {
-            return 'BN';
-          }
-        }
-        return typeMapEntry.type;
-      }
-    }
-    return `${typeDefinition}`;
-  }
 }
