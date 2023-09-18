@@ -29,9 +29,15 @@ interface Type {
   type: TypeDefinition;
 }
 
+interface Event {
+  name: string;
+  fields: TypeField[]
+}
+
 interface JSONData {
   types: Type[];
   accounts: Type[];
+  events?: Event[];
 }
 
 const typeMap = [
@@ -118,6 +124,7 @@ export function generateTypeScriptTypes({
   includeAccounts,
   includeTypes,
   includeEnums,
+  includeEvents,
   useBigNumberForBN,
 }: {
   jsonData: JSONData
@@ -125,6 +132,7 @@ export function generateTypeScriptTypes({
   includeAccounts: boolean
   includeTypes: boolean
   includeEnums: boolean,
+  includeEvents: boolean,
   useBigNumberForBN: boolean
 }): string {
   const typeScriptTypes: string[] = []
@@ -169,6 +177,22 @@ export function generateTypeScriptTypes({
         useBigNumberForBN
       )
       typeScriptTypes.push(`interface ${typeName} ${typeScriptType}`)
+    }
+  }
+
+  if (includeEvents && jsonData.events) {
+    for (const event of jsonData.events) {
+      const typeName = event.name
+      const typeDefinition: TypeDefinition = {
+        kind: 'struct',
+        fields: event.fields
+      }
+      const typescriptType = generateTypeScriptType(
+        typeDefinition,
+        useNumberForBN,
+        useBigNumberForBN
+      )
+      typeScriptTypes.push(`interface ${typeName} ${typescriptType}`)
     }
   }
 
