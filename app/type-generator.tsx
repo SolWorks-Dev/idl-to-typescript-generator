@@ -196,16 +196,14 @@ export function generateTypeScriptTypes({
     for (const type of jsonData.types) {
       const typeName = type.name;
       let isTypeSelected = typeSelection.find((type) => type.name === typeName)?.enabled || false;
-      if (isTypeSelected) {
+      if (isTypeSelected && type.type.kind !== "enum") {
         const typeDefinition = type.type;
         const typeScriptType = generateTypeScriptType(
           typeDefinition,
           useNumberForBN,
           useBigNumberForBN
         );
-        if (type.type.kind !== "enum") {
-          typeScriptTypes.push(`interface ${typeName} ${typeScriptType}`)
-        }
+        typeScriptTypes.push(`interface ${typeName} ${typeScriptType}`)
       }
     }
   }
@@ -214,16 +212,14 @@ export function generateTypeScriptTypes({
     for (const type of jsonData.types) {
       const typeName = type.name;
       let isTypeSelected = typeSelection.find((type) => type.name === typeName)?.enabled || false;
-      if (isTypeSelected) {
+      if (isTypeSelected && type.type.kind === "enum") {
         const typeDefinition = type.type
         const typeScriptType = generateTypeScriptType(
           typeDefinition,
           useNumberForBN,
           useBigNumberForBN
         )
-        if (type.type.kind === "enum") {
-          typeScriptTypes.push(`enum ${typeName} ${typeScriptType}`)
-        }
+        typeScriptTypes.push(`enum ${typeName} ${typeScriptType}`)
       }
     }
   }

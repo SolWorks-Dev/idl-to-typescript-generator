@@ -106,7 +106,21 @@ export default function IndexPage() {
               </div>
             </RadioGroup>
             <div className="flex items-center space-x-2">
-              <Checkbox id="terms2" checked={includeTypes} onCheckedChange={setIncludeTypes} />
+              <Checkbox id="terms2" checked={includeTypes} onCheckedChange={(value) => {
+                setIncludeTypes(value);
+                try {
+                  let typeList = generateListOfTypes({
+                    jsonData: JSON.parse(idl),
+                    includeAccounts: includeAccounts === true,
+                    includeTypes: value === true,
+                    includeEnums: includeEnums === true,
+                    includeEvents: includeEvents === true,
+                  });
+                  setTypeNames(typeList.map((typeName) => { return { name: typeName, enabled: true } }));
+                } catch (e: any) {
+                  console.log(e);
+                }
+              }} />
               <label
                 htmlFor="terms2"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -115,7 +129,21 @@ export default function IndexPage() {
               </label>
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="terms2" checked={includeAccounts} onCheckedChange={setIncludeAccounts} />
+              <Checkbox id="terms2" checked={includeAccounts} onCheckedChange={(value) => {
+                setIncludeAccounts(value);
+                try {
+                  let typeList = generateListOfTypes({
+                    jsonData: JSON.parse(idl),
+                    includeAccounts: value === true,
+                    includeTypes: includeTypes === true,
+                    includeEnums: includeEnums === true,
+                    includeEvents: includeEvents === true,
+                  });
+                  setTypeNames(typeList.map((typeName) => { return { name: typeName, enabled: true } }));
+                } catch (e: any) {
+                  console.log(e);
+                }
+              }} />
               <label
                 htmlFor="terms2"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -124,7 +152,21 @@ export default function IndexPage() {
               </label>
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="terms2" checked={includeEnums} onCheckedChange={setIncludeEnums} />
+              <Checkbox id="terms2" checked={includeEnums} onCheckedChange={(value) => {
+                setIncludeEnums(value);
+                try {
+                  let typeList = generateListOfTypes({
+                    jsonData: JSON.parse(idl),
+                    includeAccounts: includeAccounts === true,
+                    includeTypes: includeTypes === true,
+                    includeEnums: value === true,
+                    includeEvents: includeEvents === true,
+                  });
+                  setTypeNames(typeList.map((typeName) => { return { name: typeName, enabled: true } }));
+                } catch (e: any) {
+                  console.log(e);
+                }
+              }} />
               <label
                 htmlFor="terms2"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -133,7 +175,21 @@ export default function IndexPage() {
               </label>
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="terms2" checked={includeEvents} onCheckedChange={setIncludeEvents} />
+              <Checkbox id="terms2" checked={includeEvents} onCheckedChange={(value) => {
+                setIncludeEvents(value);
+                try {
+                  let typeList = generateListOfTypes({
+                    jsonData: JSON.parse(idl),
+                    includeAccounts: includeAccounts === true,
+                    includeTypes: includeTypes === true,
+                    includeEnums: includeEnums === true,
+                    includeEvents: value === true,
+                  });
+                  setTypeNames(typeList.map((typeName) => { return { name: typeName, enabled: true } }));
+                } catch (e: any) {
+                  console.log(e);
+                }
+              }} />
               <label
                 htmlFor="terms2"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
