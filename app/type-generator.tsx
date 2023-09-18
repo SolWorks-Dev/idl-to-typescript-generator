@@ -35,7 +35,7 @@ interface Event {
 }
 
 interface JSONData {
-  types: Type[];
+  types?: Type[];
   accounts: Type[];
   events?: Event[];
 }
@@ -137,7 +137,7 @@ export function generateTypeScriptTypes({
 }): string {
   const typeScriptTypes: string[] = []
 
-  if (includeTypes) {
+  if (includeTypes && jsonData.types) {
     for (const type of jsonData.types) {
       const typeName = type.name
       const typeDefinition = type.type
@@ -152,7 +152,7 @@ export function generateTypeScriptTypes({
     }
   }
 
-  if (includeEnums) {
+  if (includeEnums && jsonData.types) {
     for (const type of jsonData.types) {
       const typeName = type.name
       const typeDefinition = type.type
