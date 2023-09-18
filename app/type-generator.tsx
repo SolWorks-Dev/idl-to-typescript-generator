@@ -116,7 +116,57 @@ const typeMap = [
     space: 8,
     type: "number",
   },
-]
+];
+
+export function generateListOfTypes({
+  jsonData,
+  includeAccounts,
+  includeTypes,
+  includeEnums,
+  includeEvents,
+}: {
+  jsonData: JSONData,
+  includeAccounts: boolean
+  includeTypes: boolean
+  includeEnums: boolean,
+  includeEvents: boolean
+}): string[] {
+  const types: string[] = [];
+
+  if (jsonData.types && includeTypes) {
+    for (const type of jsonData.types) {
+      if (type.type.kind !== "enum") {
+        const typeName = type.name;
+        types.push(typeName);
+      }
+    }
+  }
+
+  if (jsonData.types && includeEnums) {
+    for (const type of jsonData.types) {
+      if (type.type.kind === "enum") {
+        const typeName = type.name;
+        types.push(typeName);
+      }
+    }
+  }
+
+  if (jsonData.accounts && includeAccounts) {
+    for (const type of jsonData.accounts) {
+      const typeName = type.name;
+      types.push(typeName);
+    }
+  }
+
+  if (jsonData.events && includeEvents) {
+    for (const event of jsonData.events) {
+      const typeName = event.name;
+      types.push(typeName);
+    }
+  }
+
+  return types;
+}
 
 export function generateTypeScriptTypes({
   jsonData,
@@ -126,6 +176,7 @@ export function generateTypeScriptTypes({
   includeEnums,
   includeEvents,
   useBigNumberForBN,
+  typeSelection
 }: {
   jsonData: JSONData
   useNumberForBN: CheckedState
@@ -133,66 +184,82 @@ export function generateTypeScriptTypes({
   includeTypes: boolean
   includeEnums: boolean,
   includeEvents: boolean,
-  useBigNumberForBN: boolean
+  useBigNumberForBN: boolean,
+  typeSelection: {
+    name: string;
+    enabled: boolean;
+  }[]
 }): string {
-  const typeScriptTypes: string[] = []
+  const typeScriptTypes: string[] = [];
 
   if (includeTypes && jsonData.types) {
     for (const type of jsonData.types) {
-      const typeName = type.name
-      const typeDefinition = type.type
-      const typeScriptType = generateTypeScriptType(
-        typeDefinition,
-        useNumberForBN,
-        useBigNumberForBN
-      )
-      if (type.type.kind !== "enum") {
-        typeScriptTypes.push(`interface ${typeName} ${typeScriptType}`)
+      const typeName = type.name;
+      let isTypeSelected = typeSelection.find((type) => type.name === typeName)?.enabled || false;
+      if (isTypeSelected) {
+        const typeDefinition = type.type;
+        const typeScriptType = generateTypeScriptType(
+          typeDefinition,
+          useNumberForBN,
+          useBigNumberForBN
+        );
+        if (type.type.kind !== "enum") {
+          typeScriptTypes.push(`interface ${typeName} ${typeScriptType}`)
+        }
       }
     }
   }
 
   if (includeEnums && jsonData.types) {
     for (const type of jsonData.types) {
-      const typeName = type.name
-      const typeDefinition = type.type
-      const typeScriptType = generateTypeScriptType(
-        typeDefinition,
-        useNumberForBN,
-        useBigNumberForBN
-      )
-      if (type.type.kind === "enum") {
-        typeScriptTypes.push(`enum ${typeName} ${typeScriptType}`)
+      const typeName = type.name;
+      let isTypeSelected = typeSelection.find((type) => type.name === typeName)?.enabled || false;
+      if (isTypeSelected) {
+        const typeDefinition = type.type
+        const typeScriptType = generateTypeScriptType(
+          typeDefinition,
+          useNumberForBN,
+          useBigNumberForBN
+        )
+        if (type.type.kind === "enum") {
+          typeScriptTypes.push(`enum ${typeName} ${typeScriptType}`)
+        }
       }
     }
   }
 
   if (includeAccounts && jsonData.accounts) {
     for (const type of jsonData.accounts) {
-      const typeName = type.name
-      const typeDefinition = type.type
-      const typeScriptType = generateTypeScriptType(
-        typeDefinition,
-        useNumberForBN,
-        useBigNumberForBN
-      )
-      typeScriptTypes.push(`interface ${typeName} ${typeScriptType}`)
+      const typeName = type.name;
+      let isTypeSelected = typeSelection.find((type) => type.name === typeName)?.enabled || false;
+      if (isTypeSelected) {
+        const typeDefinition = type.type
+        const typeScriptType = generateTypeScriptType(
+          typeDefinition,
+          useNumberForBN,
+          useBigNumberForBN
+        )
+        typeScriptTypes.push(`interface ${typeName} ${typeScriptType}`)
+      }
     }
   }
 
   if (includeEvents && jsonData.events) {
     for (const event of jsonData.events) {
-      const typeName = event.name
-      const typeDefinition: TypeDefinition = {
-        kind: 'struct',
-        fields: event.fields
+      const typeName = event.name;
+      let isTypeSelected = typeSelection.find((type) => type.name === typeName)?.enabled || false;
+      if (isTypeSelected) {
+        const typeDefinition: TypeDefinition = {
+          kind: 'struct',
+          fields: event.fields
+        }
+        const typescriptType = generateTypeScriptType(
+          typeDefinition,
+          useNumberForBN,
+          useBigNumberForBN
+        )
+        typeScriptTypes.push(`interface ${typeName} ${typescriptType}`)
       }
-      const typescriptType = generateTypeScriptType(
-        typeDefinition,
-        useNumberForBN,
-        useBigNumberForBN
-      )
-      typeScriptTypes.push(`interface ${typeName} ${typescriptType}`)
     }
   }
 
