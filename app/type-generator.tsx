@@ -29,9 +29,15 @@ interface Type {
   type: TypeDefinition;
 }
 
+interface Event {
+  name: string;
+  fields: TypeField[]
+}
+
 interface JSONData {
   types: Type[];
   accounts: Type[];
+  events?: Event[];
 }
 
 const typeMap = [
@@ -169,6 +175,23 @@ export function generateTypeScriptTypes({
         useBigNumberForBN
       )
       typeScriptTypes.push(`interface ${typeName} ${typeScriptType}`)
+    }
+  }
+
+  // TODO: includeEvents
+  if (jsonData.events) {
+    for (const event of jsonData.events) {
+      const typeName = event.name
+      const typeDefinition: TypeDefinition = {
+        kind: 'struct',
+        fields: event.fields
+      }
+      const typescriptType = generateTypeScriptType(
+        typeDefinition,
+        useNumberForBN,
+        useBigNumberForBN
+      )
+      typeScriptTypes.push(`interface ${typeName} ${typescriptType}`)
     }
   }
 
