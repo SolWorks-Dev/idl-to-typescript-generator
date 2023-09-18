@@ -1,6 +1,6 @@
-# SolDisperse
+# IDL Type Generator
 
-A simple web app to distribute SPL tokens to multiple addresses. Built using Next.js 13, Radix UI and Tailwind CSS.
+A simple web app to generate Typescript types for an Anchor program's IDL. Built using Next.js 13, Radix UI and Tailwind CSS + @shadcn/ui. 
 
 ## Getting Started
 
