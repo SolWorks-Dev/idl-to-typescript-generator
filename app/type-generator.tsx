@@ -176,7 +176,8 @@ export function generateTypeScriptTypes({
   includeEnums,
   includeEvents,
   useBigNumberForBN,
-  typeSelection
+  typeSelection,
+  interfaceOrType
 }: {
   jsonData: JSONData
   useNumberForBN: CheckedState
@@ -188,7 +189,8 @@ export function generateTypeScriptTypes({
   typeSelection: {
     name: string;
     enabled: boolean;
-  }[]
+  }[],
+  interfaceOrType: 'interface' | 'type'
 }): string {
   const typeScriptTypes: string[] = [];
 
@@ -203,7 +205,7 @@ export function generateTypeScriptTypes({
           useNumberForBN,
           useBigNumberForBN
         );
-        typeScriptTypes.push(`interface ${typeName} ${typeScriptType}`)
+        typeScriptTypes.push(interfaceOrType === 'interface' ? `interface ${typeName} ${typeScriptType}` : `type ${typeName} = ${typeScriptType}`)
       }
     }
   }
@@ -235,7 +237,7 @@ export function generateTypeScriptTypes({
           useNumberForBN,
           useBigNumberForBN
         )
-        typeScriptTypes.push(`interface ${typeName} ${typeScriptType}`)
+        typeScriptTypes.push(interfaceOrType === 'interface' ? `interface ${typeName} ${typeScriptType}` : `type ${typeName} = ${typeScriptType}`)
       }
     }
   }
@@ -254,7 +256,7 @@ export function generateTypeScriptTypes({
           useNumberForBN,
           useBigNumberForBN
         )
-        typeScriptTypes.push(`interface ${typeName} ${typescriptType}`)
+        typeScriptTypes.push(interfaceOrType === 'interface' ? `interface ${typeName} ${typescriptType}` : `type ${typeName} = ${typescriptType}`)
       }
     }
   }

@@ -27,6 +27,7 @@ export default function IndexPage() {
   const [includeEnums, setIncludeEnums] = useState<CheckedState>(true);
   const [includeEvents, setIncludeEvents] = useState<CheckedState>(true);
   const [bnTypeReplacement, setBnTypeReplacement] = useState<"number" | "bignumber" | "bn">("bn");
+  const [interfaceOrType, setInterfaceOrType] = useState<"interface" | "type">("interface");
 
   return (
     <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
@@ -105,6 +106,7 @@ export default function IndexPage() {
                 </text>
               </div>
             </RadioGroup>
+            <Separator />
             <div className="flex items-center space-x-2">
               <Checkbox id="terms1" checked={includeTypes} onCheckedChange={(value) => {
                 setIncludeTypes(value);
@@ -197,6 +199,23 @@ export default function IndexPage() {
                 Include Events
               </label>
             </div>
+            <Separator />
+            <RadioGroup defaultValue="interface" value={interfaceOrType} onValueChange={(value) => {
+              setInterfaceOrType(value as "interface" | "type");
+            }}>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="interface" id="option-one" />
+                <text className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                  Use interfaces
+                </text>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="type" id="option-two" />
+                <text className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                  Use types
+                </text>
+              </div>
+            </RadioGroup>
           </div>
         </div>
         <div className="flex items-center justify-start space-x-4 pt-2">
@@ -244,6 +263,7 @@ export default function IndexPage() {
                   useNumberForBN: bnTypeReplacement === "number",
                   useBigNumberForBN: bnTypeReplacement === "bignumber",
                   typeSelection: typeNames,
+                  interfaceOrType
                 })
                 setTypes(types)
                 toast({
