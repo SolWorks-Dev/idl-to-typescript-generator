@@ -118,12 +118,14 @@ export function generateTypeScriptTypes({
   includeAccounts,
   includeTypes,
   includeEnums,
+  useBigNumberForBN,
 }: {
   jsonData: JSONData
   useNumberForBN: CheckedState
   includeAccounts: boolean
   includeTypes: boolean
-  includeEnums: boolean
+  includeEnums: boolean,
+  useBigNumberForBN: boolean
 }): string {
   const typeScriptTypes: string[] = []
 
@@ -133,7 +135,8 @@ export function generateTypeScriptTypes({
       const typeDefinition = type.type
       const typeScriptType = generateTypeScriptType(
         typeDefinition,
-        useNumberForBN
+        useNumberForBN,
+        useBigNumberForBN
       )
       if (type.type.kind !== "enum") {
         typeScriptTypes.push(`interface ${typeName} ${typeScriptType}`)
@@ -147,7 +150,8 @@ export function generateTypeScriptTypes({
       const typeDefinition = type.type
       const typeScriptType = generateTypeScriptType(
         typeDefinition,
-        useNumberForBN
+        useNumberForBN,
+        useBigNumberForBN
       )
       if (type.type.kind === "enum") {
         typeScriptTypes.push(`enum ${typeName} ${typeScriptType}`)
@@ -161,7 +165,8 @@ export function generateTypeScriptTypes({
       const typeDefinition = type.type
       const typeScriptType = generateTypeScriptType(
         typeDefinition,
-        useNumberForBN
+        useNumberForBN,
+        useBigNumberForBN
       )
       typeScriptTypes.push(`interface ${typeName} ${typeScriptType}`)
     }
@@ -170,12 +175,12 @@ export function generateTypeScriptTypes({
   return typeScriptTypes.join("\n\n")
 }
 
-function generateTypeScriptType(typeDefinition: TypeDefinition, useNumberForBN: CheckedState): string {
+function generateTypeScriptType(typeDefinition: TypeDefinition, useNumberForBN: CheckedState, useBigNumberForBN: CheckedState): string {
   if (typeDefinition.kind === 'struct') {
     const fields = typeDefinition.fields || [];
     const fieldTypes = fields
       // @ts-ignore
-      .map((field) => `   ${field.name}: ${generateTypeScriptType(field.type, useNumberForBN)};`)
+      .map((field) => `   ${field.name}: ${generateTypeScriptType(field.type, useNumberForBN, useBigNumberForBN)};`)
       .join('\n');
     return `{\n${fieldTypes}\n}`;
   } else if (typeDefinition.kind === 'enum') {
@@ -187,7 +192,7 @@ function generateTypeScriptType(typeDefinition: TypeDefinition, useNumberForBN: 
     return `{\n${variantNames}\n}`;
   } else if (typeDefinition.array) {
     const [definedType, length] = typeDefinition.array;
-    return `[${generateTypeScriptType(definedType, useNumberForBN)}: ${length}]`;
+    return `[${generateTypeScriptType(definedType, useNumberForBN, useBigNumberForBN)}: ${length}]`;
   } else if (typeDefinition.defined) {
     return `${typeDefinition.defined}`;
   } else if (typeDefinition.option) {
@@ -196,14 +201,15 @@ function generateTypeScriptType(typeDefinition: TypeDefinition, useNumberForBN: 
     } else {
       return `${generateTypeScriptType(
         typeDefinition.option,
-        useNumberForBN
+        useNumberForBN,
+        useBigNumberForBN
       )} | null`
     }
   } else if (typeDefinition.vec) {
     if (typeof typeDefinition.vec === "string") {
       return `${typeDefinition.vec}[]`
     } else {
-      return `${generateTypeScriptType(typeDefinition.vec, useNumberForBN)}[]`
+      return `${generateTypeScriptType(typeDefinition.vec, useNumberForBN, useBigNumberForBN)}[]`
     }
   } else {
     if (typeDefinition.type) {
@@ -220,6 +226,8 @@ function generateTypeScriptType(typeDefinition: TypeDefinition, useNumberForBN: 
             return 'BN | number';
           } else if (useNumberForBN) {
             return 'number';
+          } else if (useBigNumberForBN) {
+            return 'BigNumber';
           } else {
             return 'BN';
           }

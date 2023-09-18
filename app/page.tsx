@@ -30,6 +30,7 @@ export default function IndexPage() {
   const [idl, setIdl] = useState("");
   const [types, setTypes] = useState("");
   const [useNumberForBN, setUseNumberForBN] = useState<CheckedState>(false);
+  const [useBigNumberForBN, setUseBigNumberForBN] = useState<CheckedState>(false);
   const [includeAccounts, setIncludeAccounts] = useState<CheckedState>(false);
   const [includeTypes, setIncludeTypes] = useState<CheckedState>(true);
   const [includeEnums, setIncludeEnums] = useState<CheckedState>(true);
@@ -83,6 +84,15 @@ export default function IndexPage() {
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 Use number type for BN
+              </label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox id="terms2" checked={useBigNumberForBN} onCheckedChange={setUseBigNumberForBN} />
+              <label
+                htmlFor="terms2"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Use BigNumber type for BN
               </label>
             </div>
             <div className="flex items-center space-x-2">
@@ -143,6 +153,7 @@ export default function IndexPage() {
                   includeAccounts: includeAccounts === true,
                   includeTypes: includeTypes === true,
                   includeEnums: includeEnums === true,
+                  useBigNumberForBN: useBigNumberForBN === true,
                 })
                 setTypes(types)
                 toast({
