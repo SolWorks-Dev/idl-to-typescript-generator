@@ -166,13 +166,14 @@ export default function IndexPage() {
 
 
 interface TypeDefinition {
-  kind: string;
-  fields?: TypeField[];
-  variants?: TypeVariant[];
-  array?: [TypeDefinition, number];
-  defined?: string;
-  type?: string;
-  option?: TypeDefinition | string;
+  kind: string
+  fields?: TypeField[]
+  variants?: TypeVariant[]
+  array?: [TypeDefinition, number]
+  defined?: string
+  type?: string
+  option?: TypeDefinition | string
+  vec?: TypeDefinition | string
 }
 
 interface TypeField {
@@ -312,7 +313,16 @@ function generateTypeScriptType(typeDefinition: TypeDefinition, useNumberForBN: 
     if (typeof typeDefinition.option === 'string') {
       return `${typeDefinition.option} | null`;
     } else {
-      return `${generateTypeScriptType(typeDefinition.option, useNumberForBN)} | null`;
+      return `${generateTypeScriptType(
+        typeDefinition.option,
+        useNumberForBN
+      )} | null`
+    }
+  } else if (typeDefinition.vec) {
+    if (typeof typeDefinition.vec === "string") {
+      return `${typeDefinition.vec}[]`
+    } else {
+      return `${generateTypeScriptType(typeDefinition.vec, useNumberForBN)}[]`
     }
   } else {
     if (typeDefinition.type) {
