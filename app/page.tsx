@@ -22,7 +22,7 @@ export default function IndexPage() {
     enabled: boolean;
   }[]>([]);
   const [types, setTypes] = useState("");
-  const [includeAccounts, setIncludeAccounts] = useState<CheckedState>(false);
+  const [includeAccounts, setIncludeAccounts] = useState<CheckedState>(true);
   const [includeTypes, setIncludeTypes] = useState<CheckedState>(true);
   const [includeEnums, setIncludeEnums] = useState<CheckedState>(true);
   const [includeEvents, setIncludeEvents] = useState<CheckedState>(true);
@@ -106,7 +106,7 @@ export default function IndexPage() {
               </div>
             </RadioGroup>
             <div className="flex items-center space-x-2">
-              <Checkbox id="terms2" checked={includeTypes} onCheckedChange={(value) => {
+              <Checkbox id="terms1" checked={includeTypes} onCheckedChange={(value) => {
                 setIncludeTypes(value);
                 try {
                   let typeList = generateListOfTypes({
@@ -122,7 +122,7 @@ export default function IndexPage() {
                 }
               }} />
               <label
-                htmlFor="terms2"
+                htmlFor="terms1"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 Include Types
@@ -152,7 +152,7 @@ export default function IndexPage() {
               </label>
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="terms2" checked={includeEnums} onCheckedChange={(value) => {
+              <Checkbox id="terms3" checked={includeEnums} onCheckedChange={(value) => {
                 setIncludeEnums(value);
                 try {
                   let typeList = generateListOfTypes({
@@ -168,14 +168,14 @@ export default function IndexPage() {
                 }
               }} />
               <label
-                htmlFor="terms2"
+                htmlFor="terms3"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 Include Enums
               </label>
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="terms2" checked={includeEvents} onCheckedChange={(value) => {
+              <Checkbox id="terms4" checked={includeEvents} onCheckedChange={(value) => {
                 setIncludeEvents(value);
                 try {
                   let typeList = generateListOfTypes({
@@ -191,7 +191,7 @@ export default function IndexPage() {
                 }
               }} />
               <label
-                htmlFor="terms2"
+                htmlFor="terms4"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 Include Events
