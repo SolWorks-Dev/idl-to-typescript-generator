@@ -28,6 +28,7 @@ export default function IndexPage() {
   const [includeEvents, setIncludeEvents] = useState<CheckedState>(true);
   const [bnTypeReplacement, setBnTypeReplacement] = useState<"number" | "bignumber" | "bn">("bn");
   const [interfaceOrType, setInterfaceOrType] = useState<"interface" | "type">("interface");
+  const [includeExport, setIncludeExport] = useState<CheckedState>(true);
 
   return (
     <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
@@ -83,6 +84,15 @@ export default function IndexPage() {
                 </div>
               </div>
             </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox id="terms5" checked={includeExport} onCheckedChange={setIncludeExport} />
+              <label
+                htmlFor="terms5"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Export all types
+              </label>
+            </div>
             <RadioGroup defaultValue="bn" value={bnTypeReplacement} onValueChange={(value) => {
               console.log(value);
               setBnTypeReplacement(value as "number" | "bignumber" | "bn");
@@ -106,7 +116,6 @@ export default function IndexPage() {
                 </text>
               </div>
             </RadioGroup>
-            <Separator />
             <div className="flex items-center space-x-2">
               <Checkbox id="terms1" checked={includeTypes} onCheckedChange={(value) => {
                 setIncludeTypes(value);
@@ -199,7 +208,6 @@ export default function IndexPage() {
                 Include Events
               </label>
             </div>
-            <Separator />
             <RadioGroup defaultValue="interface" value={interfaceOrType} onValueChange={(value) => {
               setInterfaceOrType(value as "interface" | "type");
             }}>
@@ -263,7 +271,8 @@ export default function IndexPage() {
                   useNumberForBN: bnTypeReplacement === "number",
                   useBigNumberForBN: bnTypeReplacement === "bignumber",
                   typeSelection: typeNames,
-                  interfaceOrType
+                  interfaceOrType,
+                  includeExport: includeExport === true,
                 })
                 setTypes(types)
                 toast({

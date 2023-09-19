@@ -177,7 +177,8 @@ export function generateTypeScriptTypes({
   includeEvents,
   useBigNumberForBN,
   typeSelection,
-  interfaceOrType
+  interfaceOrType,
+  includeExport
 }: {
   jsonData: JSONData
   useNumberForBN: CheckedState
@@ -190,7 +191,8 @@ export function generateTypeScriptTypes({
     name: string;
     enabled: boolean;
   }[],
-  interfaceOrType: 'interface' | 'type'
+  interfaceOrType: 'interface' | 'type',
+  includeExport: boolean
 }): string {
   const typeScriptTypes: string[] = [];
 
@@ -205,7 +207,7 @@ export function generateTypeScriptTypes({
           useNumberForBN,
           useBigNumberForBN
         );
-        typeScriptTypes.push(interfaceOrType === 'interface' ? `interface ${typeName} ${typeScriptType}` : `type ${typeName} = ${typeScriptType}`)
+        typeScriptTypes.push(interfaceOrType === 'interface' ? `${includeExport ? 'export ' : ''}interface ${typeName} ${typeScriptType}` : `${includeExport ? 'export ' : ''}type ${typeName} = ${typeScriptType}`)
       }
     }
   }
@@ -221,7 +223,7 @@ export function generateTypeScriptTypes({
           useNumberForBN,
           useBigNumberForBN
         )
-        typeScriptTypes.push(`enum ${typeName} ${typeScriptType}`)
+        typeScriptTypes.push(`${includeExport ? 'export ' : ''}enum ${typeName} ${typeScriptType}`)
       }
     }
   }
@@ -237,7 +239,7 @@ export function generateTypeScriptTypes({
           useNumberForBN,
           useBigNumberForBN
         )
-        typeScriptTypes.push(interfaceOrType === 'interface' ? `interface ${typeName} ${typeScriptType}` : `type ${typeName} = ${typeScriptType}`)
+        typeScriptTypes.push(interfaceOrType === 'interface' ? `${includeExport ? 'export ' : ''}interface ${typeName} ${typeScriptType}` : `${includeExport ? 'export ' : ''}type ${typeName} = ${typeScriptType}`)
       }
     }
   }
@@ -256,7 +258,7 @@ export function generateTypeScriptTypes({
           useNumberForBN,
           useBigNumberForBN
         )
-        typeScriptTypes.push(interfaceOrType === 'interface' ? `interface ${typeName} ${typescriptType}` : `type ${typeName} = ${typescriptType}`)
+        typeScriptTypes.push(interfaceOrType === 'interface' ? `${includeExport ? 'export ' : ''}interface ${typeName} ${typescriptType}` : `${includeExport ? 'export ' : ''}type ${typeName} = ${typescriptType}`)
       }
     }
   }
