@@ -165,7 +165,7 @@ export function generateListOfTypes({
     }
   }
 
-  return types;
+  return types.sort();
 }
 
 export function generateTypeScriptTypes({
