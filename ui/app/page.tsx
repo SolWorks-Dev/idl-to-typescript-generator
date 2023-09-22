@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { CheckedState } from "@radix-ui/react-checkbox";
-import { Logger } from "@solworks/soltoolkit-sdk";
 import { ArrowLeftRight, Check, Clipboard, ClipboardCopy, X } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Button } from "@/components/ui/button";
@@ -11,8 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
-import { generateListOfTypes, generateTypeScriptTypes } from "./type-generator";
-const logger = new Logger("core");
+import generateTypeScriptTypes, { generateListOfTypes } from "@solworks/idl-to-typescript-generator-lib";
 
 export default function IndexPage() {
   const { toast } = useToast();
@@ -311,6 +309,7 @@ export default function IndexPage() {
             placeholder={"Types will appear here."}
             value={types}
             className="h-[500px]"
+            readOnly
           />
            <div className="flex flex-col gap-2 w-[400px] sticky top-0">
             <div className="mb-4">

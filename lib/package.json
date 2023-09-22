@@ -1,0 +1,19 @@
+{
+  "name": "@solworks/idl-to-typescript-generator-lib",
+  "version": "1.0.1",
+  "description": "Convert your Anchor program IDL to Typescript types.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
+    "build": "npx tsc",
+    "build::publish::patch": "npm run build && npm version patch && npm publish --access=public"
+  },
+  "author": "Zhe SolWorks",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.6.3",
+    "prettier": "^3.0.3",
+    "typescript": "^5.2.2"
+  }
+}
